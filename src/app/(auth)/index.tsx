@@ -49,6 +49,7 @@ const LoginForm = () => {
         placeholder="Username"
         value={username}
         onChangeText={setUsername}
+        placeholderTextColor="black"
       />
       <TextInput
         style={styles.input}
@@ -56,6 +57,7 @@ const LoginForm = () => {
         secureTextEntry
         value={password}
         onChangeText={setPassword}
+        placeholderTextColor="black"
       />
       <Pressable style={styles.button} onPress={handleLogin}>
         <Text style={styles.buttonText}>Login</Text>
