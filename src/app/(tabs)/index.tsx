@@ -90,8 +90,9 @@ export default function TabOneScreen() {
         throw new Error('Utilisateur non trouvé');
       }
 
-      const userId = userData[0].id;
-
+      const userId = userData[1].id;
+      console.log(userId);
+      console.log(taskId);
       // Requête pour prendre la tâche
       const response = await fetch(`https://f565-2001-818-dbbb-a100-759c-3981-2506-ec6f.ngrok-free.app/api/take_task/`, {
         method: 'POST',
@@ -100,8 +101,8 @@ export default function TabOneScreen() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          userId: userId,
           taskId: taskId,
+          userId: userId,
         }),
       });
 
@@ -131,12 +132,11 @@ export default function TabOneScreen() {
 
   const renderItem = ({ item }: { item: Task }) => (
     <View style={styles.itemContainer}>
-      <Text style={styles.name}>{item.id}</Text>
       <Text style={styles.name}>{item.name || 'Nom non disponible'}</Text>
       <Text style={styles.instructions}>
-        {item.instruction_text ? (item.instruction_text === "False" ? "Aucune instruction disponible" : item.instruction_text) : 'Instructions non disponibles'}
+        {item.instruction_text ? (item.instruction_text === "False" ? "No instructions available" : item.instruction_text) : 'Instructions non disponibles'}
       </Text>
-      <Button title="Prendre la tâche" onPress={() => handleTakeTask(item.id)} />
+      <Button title="Take the work order" onPress={() => handleTakeTask(item.id)} />
     </View>
   );
 

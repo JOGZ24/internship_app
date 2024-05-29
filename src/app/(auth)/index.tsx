@@ -29,6 +29,7 @@ const LoginForm = () => {
       const data = await response.json();
       setToken(data.token);
       setUser(username);
+      console.log(username);
 
 
       setUsername('');

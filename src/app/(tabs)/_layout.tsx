@@ -43,7 +43,7 @@ export default function TabLayout({ navigation }: { navigation: any }) {
       <Tabs.Screen
         name="myTasks"
         options={{
-          title: 'Work Orders', // Changer le nom ici
+          title: 'My Work Orders', // Changer le nom ici
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
         }}
       />

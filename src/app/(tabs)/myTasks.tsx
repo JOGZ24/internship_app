@@ -24,7 +24,7 @@ export default function TabTwoScreen() {
         React.useCallback(() => {
             const fetchSearchResults = async () => {
                 try {
-                    const response = await fetch(`https://f565-2001-818-dbbb-a100-759c-3981-2506-ec6f.ngrok-free.app/api/mytasks/search-by-username/?username=julien`, {
+                    const response = await fetch(`https://f565-2001-818-dbbb-a100-759c-3981-2506-ec6f.ngrok-free.app/api/mytasks/search-by-username/?username=${username}`, {
                         method: 'GET',
                         headers: {
                             'Authorization': `Token ${token}`,
