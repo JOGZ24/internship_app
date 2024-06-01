@@ -1,5 +1,3 @@
-// TabLayout.tsx
-
 import React from 'react';
 import { Text, View, Pressable } from 'react-native';
 import { FontAwesome } from '@expo/vector-icons';
@@ -47,6 +45,7 @@ export default function TabLayout({ navigation }: { navigation: any }) {
           tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
         }}
       />
+
     </Tabs>
   );
 }

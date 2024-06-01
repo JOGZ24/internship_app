@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, FlatList, ActivityIndicator, Button, RefreshControl } from 'react-native';
+import { StyleSheet, FlatList, ActivityIndicator, Button, RefreshControl, Pressable } from 'react-native';
 import { Text, View } from '../../components/Themed';
 import { useAuth } from '@/src/providers/AuthProvider';
+import { Link } from 'expo-router';
 
 interface Task {
   id: number;
@@ -41,7 +42,7 @@ export default function TabOneScreen() {
       });
       const jsonData = await response.json();
       if (jsonData.length > 0) {
-        setTeamId(jsonData[0].id);
+        setTeamId(jsonData[1].id);
       } else {
         console.log('Aucune équipe trouvée pour cet utilisateur.');
         setLoading(false);
@@ -60,7 +61,9 @@ export default function TabOneScreen() {
           'Authorization': `Token ${token}`,
         },
       });
+
       const jsonData: Task[] = await response.json();
+      console.log(jsonData);
       const filteredData = jsonData.filter(task => task.user_id === null);
       setData(filteredData);
       setLoading(false);
@@ -90,7 +93,7 @@ export default function TabOneScreen() {
         throw new Error('Utilisateur non trouvé');
       }
 
-      const userId = userData[1].id;
+      const userId = userData[0].id;
       console.log(userId);
       console.log(taskId);
       // Requête pour prendre la tâche
@@ -112,11 +115,10 @@ export default function TabOneScreen() {
         setData(prevData => prevData.filter(task => task.id !== taskId));
       } else {
         console.error('Erreur lors de la prise de la tâche:', response.status);
-        // Gérez l'erreur de la manière appropriée
       }
     } catch (error) {
       console.error('Erreur lors de la prise de la tâche:', error);
-      // Gérez l'erreur de la manière appropriée
+
     }
   };
 
@@ -131,13 +133,15 @@ export default function TabOneScreen() {
   };
 
   const renderItem = ({ item }: { item: Task }) => (
-    <View style={styles.itemContainer}>
-      <Text style={styles.name}>{item.name || 'Nom non disponible'}</Text>
-      <Text style={styles.instructions}>
-        {item.instruction_text ? (item.instruction_text === "False" ? "No instructions available" : item.instruction_text) : 'Instructions non disponibles'}
-      </Text>
-      <Button title="Take the work order" onPress={() => handleTakeTask(item.id)} />
-    </View>
+    <Link href={`/${item.id}`} asChild>
+      <Pressable style={styles.itemContainer}>
+        <Text style={styles.name}>{item.name || 'Nom non disponible'}</Text>
+        <Text style={styles.instructions}>
+          {item.instruction_text ? (item.instruction_text === "False" ? "No instructions available" : item.instruction_text) : 'Instructions non disponibles'}
+        </Text>
+        <Button title="Take the work order" onPress={() => handleTakeTask(item.id)} />
+      </Pressable>
+    </Link>
   );
 
   return (
