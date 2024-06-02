@@ -51,12 +51,15 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="two"
+        name="menu2"
         options={{
           title: 'Orders',
+          headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="list" color={color} />,
         }}
       />
+      <Tabs.Screen name='two' options={{ href: null }}></Tabs.Screen>
     </Tabs>
+
   );
 }
