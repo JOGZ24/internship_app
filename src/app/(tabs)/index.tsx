@@ -34,7 +34,7 @@ export default function TabOneScreen() {
 
   const fetchTeamId = async () => {
     try {
-      const response = await fetch(`https://f565-2001-818-dbbb-a100-759c-3981-2506-ec6f.ngrok-free.app/api/teams/?search=${username}`, {
+      const response = await fetch(`https://1028-2001-818-dbbb-a100-64f3-8cfa-bcbb-4b7c.ngrok-free.app/api/teams/?search=${username}`, {
         method: 'GET',
         headers: {
           'Authorization': `Token ${token}`,
@@ -42,7 +42,7 @@ export default function TabOneScreen() {
       });
       const jsonData = await response.json();
       if (jsonData.length > 0) {
-        setTeamId(jsonData[1].id);
+        setTeamId(jsonData[0].id);
       } else {
         console.log('Aucune équipe trouvée pour cet utilisateur.');
         setLoading(false);
@@ -55,7 +55,7 @@ export default function TabOneScreen() {
 
   const fetchData = async () => {
     try {
-      const response = await fetch(`https://f565-2001-818-dbbb-a100-759c-3981-2506-ec6f.ngrok-free.app/api/tasks/?search=${teamId}`, {
+      const response = await fetch(`https://1028-2001-818-dbbb-a100-64f3-8cfa-bcbb-4b7c.ngrok-free.app/api/tasks/?search=${teamId}`, {
         method: 'GET',
         headers: {
           'Authorization': `Token ${token}`,
@@ -77,7 +77,7 @@ export default function TabOneScreen() {
   const handleTakeTask = async (taskId: number) => {
     try {
       // Requête pour obtenir l'ID de l'utilisateur
-      const userResponse = await fetch(`https://f565-2001-818-dbbb-a100-759c-3981-2506-ec6f.ngrok-free.app/api/users/?search=${username}`, {
+      const userResponse = await fetch(`https://1028-2001-818-dbbb-a100-64f3-8cfa-bcbb-4b7c.ngrok-free.app/api/users/?search=${username}`, {
         method: 'GET',
         headers: {
           'Authorization': `Token ${token}`,
@@ -97,7 +97,7 @@ export default function TabOneScreen() {
       console.log(userId);
       console.log(taskId);
       // Requête pour prendre la tâche
-      const response = await fetch(`https://f565-2001-818-dbbb-a100-759c-3981-2506-ec6f.ngrok-free.app/api/take_task/`, {
+      const response = await fetch(`https://1028-2001-818-dbbb-a100-64f3-8cfa-bcbb-4b7c.ngrok-free.app/api/take_task/`, {
         method: 'POST',
         headers: {
           'Authorization': `Token ${token}`,

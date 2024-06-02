@@ -19,12 +19,12 @@ export default function TabTwoScreen() {
     const [loading, setLoading] = useState(true);
     const { token, username } = useAuth();
 
-    // Utilisez useFocusEffect pour déclencher le chargement des données à chaque navigation sur cette page
+
     useFocusEffect(
         React.useCallback(() => {
             const fetchSearchResults = async () => {
                 try {
-                    const response = await fetch(`https://f565-2001-818-dbbb-a100-759c-3981-2506-ec6f.ngrok-free.app/api/mytasks/search-by-username/?username=${username}`, {
+                    const response = await fetch(`https://1028-2001-818-dbbb-a100-64f3-8cfa-bcbb-4b7c.ngrok-free.app/api/mytasks/search-by-username/?username=${username}`, {
                         method: 'GET',
                         headers: {
                             'Authorization': `Token ${token}`,
@@ -44,9 +44,9 @@ export default function TabTwoScreen() {
 
             fetchSearchResults();
 
-            // Retournez une fonction de nettoyage pour annuler les effets secondaires (facultatif)
+
             return () => {
-                // Nettoyage (si nécessaire)
+
             };
         }, [token, username])
     );
