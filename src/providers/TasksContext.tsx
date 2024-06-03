@@ -7,7 +7,7 @@ interface Task {
     name: string;
     instruction_text: string;
     user_id: Int16Array | null;
-    stage_id: string;
+    stage_id: number;
 }
 
 interface TasksContextType {
