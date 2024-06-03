@@ -1,18 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, FlatList, ActivityIndicator, Button, RefreshControl, Pressable } from 'react-native';
 import { Text, View } from '../../../components/Themed';
 import { useAuth } from '@/src/providers/AuthProvider';
 import { Link } from 'expo-router';
+import { useTasks } from '../../../providers/TasksContext';
 
 interface Task {
   id: number;
   name: string;
   instruction_text: string;
-  user_id: Int16Array;
+  user_id: Int16Array | null;
 }
 
 export default function TabOneScreen() {
-  const [data, setData] = useState<Task[]>([]);
+  const { tasks, setTasks, fetchAndStoreTasks } = useTasks();
   const [loading, setLoading] = useState(true);
   const [teamId, setTeamId] = useState<number | null>(null);
   const [isEmpty, setIsEmpty] = useState(false);
@@ -22,17 +23,21 @@ export default function TabOneScreen() {
 
   useEffect(() => {
     if (token) {
-      fetchTeamId();
+      fetchTeamId(token);
     }
   }, [token]);
 
   useEffect(() => {
-    if (teamId) {
-      fetchData();
+    if (teamId && token) {
+      fetchAndStoreTasks(token, teamId).then(() => setLoading(false));
     }
-  }, [teamId]);
+  }, [teamId, token, fetchAndStoreTasks]);
 
-  const fetchTeamId = async () => {
+  useEffect(() => {
+    setIsEmpty(tasks.length === 0);
+  }, [tasks]);
+
+  const fetchTeamId = async (token: string) => {
     try {
       const response = await fetch(`https://1028-2001-818-dbbb-a100-64f3-8cfa-bcbb-4b7c.ngrok-free.app/api/teams/?search=${username}`, {
         method: 'GET',
@@ -53,30 +58,10 @@ export default function TabOneScreen() {
     }
   };
 
-  const fetchData = async () => {
-    try {
-      const response = await fetch(`https://1028-2001-818-dbbb-a100-64f3-8cfa-bcbb-4b7c.ngrok-free.app/api/tasks/?search=${teamId}`, {
-        method: 'GET',
-        headers: {
-          'Authorization': `Token ${token}`,
-        },
-      });
-
-      const jsonData: Task[] = await response.json();
-      console.log(jsonData);
-      const filteredData = jsonData.filter(task => task.user_id === null);
-      setData(filteredData);
-      setLoading(false);
-      setIsEmpty(filteredData.length === 0);
-    } catch (error) {
-      console.error('Erreur lors de la récupération des données: ', error);
-      setLoading(false);
-    }
-  };
-
   const handleTakeTask = async (taskId: number) => {
+    if (!token) return; // Vérifiez que le token est défini
+
     try {
-      // Requête pour obtenir l'ID de l'utilisateur
       const userResponse = await fetch(`https://1028-2001-818-dbbb-a100-64f3-8cfa-bcbb-4b7c.ngrok-free.app/api/users/?search=${username}`, {
         method: 'GET',
         headers: {
@@ -94,9 +79,7 @@ export default function TabOneScreen() {
       }
 
       const userId = userData[0].id;
-      console.log(userId);
-      console.log(taskId);
-      // Requête pour prendre la tâche
+
       const response = await fetch(`https://1028-2001-818-dbbb-a100-64f3-8cfa-bcbb-4b7c.ngrok-free.app/api/take_task/`, {
         method: 'POST',
         headers: {
@@ -111,23 +94,24 @@ export default function TabOneScreen() {
 
       if (response.ok) {
         console.log('Tâche prise:', taskId);
-        // Mettre à jour les données pour filtrer la tâche prise
-        setData(prevData => prevData.filter(task => task.id !== taskId));
+        const updatedTasks = tasks.filter(task => task.id !== taskId);
+        setTasks(updatedTasks);
       } else {
         console.error('Erreur lors de la prise de la tâche:', response.status);
       }
     } catch (error) {
       console.error('Erreur lors de la prise de la tâche:', error);
-
     }
   };
 
   const handleRefresh = async () => {
     setRefreshing(true);
-    try {
-      await fetchData();
-    } catch (error) {
-      console.error('Erreur lors du rafraîchissement des données: ', error);
+    if (token && teamId) {
+      try {
+        await fetchAndStoreTasks(token, teamId);
+      } catch (error) {
+        console.error('Erreur lors du rafraîchissement des données: ', error);
+      }
     }
     setRefreshing(false);
   };
@@ -152,7 +136,7 @@ export default function TabOneScreen() {
         <Text style={{ color: 'black' }}>Aucune tâche disponible.</Text>
       ) : (
         <FlatList
-          data={data}
+          data={tasks}
           renderItem={renderItem}
           keyExtractor={item => item.id.toString()}
           contentContainerStyle={{ paddingVertical: 10 }}
@@ -178,16 +162,14 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 15,
     marginBottom: 10,
-    backgroundColor: '#F9F9F9',
   },
   name: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 5,
-    color: '#333333',
   },
   instructions: {
-    fontSize: 16,
-    color: '#666666',
+    fontSize: 14,
+    color: '#666',
+    marginTop: 5,
   },
 });

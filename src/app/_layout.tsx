@@ -8,6 +8,8 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '../components/useColorScheme';
 import { AuthProvider } from '../providers/AuthProvider';
+import { TasksProvider } from '../providers/TasksContext';
+import { MyTasksProvider } from '../providers/MyTasksContext';
 
 
 export {
@@ -52,11 +54,15 @@ function RootLayoutNav() {
 
   return (
     <AuthProvider>
-      <Stack>
-        <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-      </Stack>
+      <TasksProvider>
+        <MyTasksProvider>
+          <Stack>
+            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+          </Stack>
+        </MyTasksProvider>
+      </TasksProvider>
     </AuthProvider>
   );
 }
