@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, FlatList, ActivityIndicator, Button, RefreshControl, Pressable } from 'react-native';
+import { StyleSheet, FlatList, ActivityIndicator, RefreshControl, Pressable } from 'react-native';
 import { Text, View } from '../../../components/Themed';
 import { useAuth } from '@/src/providers/AuthProvider';
 import { Link } from 'expo-router';
@@ -19,6 +19,7 @@ export default function TabOneScreen() {
   const [teamId, setTeamId] = useState<number | null>(null);
   const [isEmpty, setIsEmpty] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
 
   const { token, username } = useAuth();
 
@@ -60,7 +61,9 @@ export default function TabOneScreen() {
   };
 
   const handleTakeTask = async (taskId: number) => {
-    if (!token) return; // Vérifiez que le token est défini
+    if (!token) return;
+
+    setSelectedTaskId(taskId);
 
     try {
       const userResponse = await fetch(`https://1028-2001-818-dbbb-a100-64f3-8cfa-bcbb-4b7c.ngrok-free.app/api/users/?search=${username}`, {
@@ -97,11 +100,14 @@ export default function TabOneScreen() {
         console.log('Tâche prise:', taskId);
         const updatedTasks = tasks.filter(task => task.id !== taskId);
         setTasks(updatedTasks);
+        setSelectedTaskId(null); // Reset the selected task ID after successful action
       } else {
         console.error('Erreur lors de la prise de la tâche:', response.status);
+        setSelectedTaskId(null); // Reset in case of error
       }
     } catch (error) {
       console.error('Erreur lors de la prise de la tâche:', error);
+      setSelectedTaskId(null); // Reset in case of error
     }
   };
 
@@ -124,8 +130,16 @@ export default function TabOneScreen() {
         <Text style={styles.instructions}>
           {item.instruction_text ? (item.instruction_text === "False" ? "No instructions available" : item.instruction_text) : 'Instructions non disponibles'}
         </Text>
-        <Text>{item.stage_id}</Text>
-        <Button title="Take the work order" onPress={() => handleTakeTask(item.id)} />
+        <Text>Stage: {item.stage_id}</Text>
+        <Pressable
+          style={[
+            styles.takeTaskButton,
+            selectedTaskId === item.id && styles.takeTaskButtonSelected,
+          ]}
+          onPress={() => handleTakeTask(item.id)}
+        >
+          <Text style={styles.takeTaskButtonText}>Take the work order</Text>
+        </Pressable>
       </Pressable>
     </Link>
   );
@@ -164,14 +178,31 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 15,
     marginBottom: 10,
+    backgroundColor: '#f9f9f9',
   },
   name: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: '#333',
   },
   instructions: {
     fontSize: 14,
     color: '#666',
     marginTop: 5,
+  },
+  takeTaskButton: {
+    marginTop: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    backgroundColor: '#007bff',
+    borderRadius: 5,
+  },
+  takeTaskButtonSelected: {
+    backgroundColor: '#0056b3',
+  },
+  takeTaskButtonText: {
+    color: 'white',
+    textAlign: 'center',
+    fontSize: 16,
   },
 });

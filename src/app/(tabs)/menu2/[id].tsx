@@ -1,72 +1,46 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Button, Alert } from 'react-native';
-import { useMyTasks } from '../../../providers/MyTasksContext'; // Importez le contexte
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { useMyTasks } from '../../../providers/MyTasksContext';
 import { useLocalSearchParams } from 'expo-router';
 import NetInfo from '@react-native-community/netinfo';
 import { useAuth } from '@/src/providers/AuthProvider';
 
-interface Task {
-    id: number;
-    name: string;
-    instruction_text: string;
-    stage_id: number;
-}
-
 const ProductDetailsScreen = () => {
     const { id } = useLocalSearchParams();
     const { token, username } = useAuth();
-    const { myTasks, setMyTasks } = useMyTasks(); // Utilisez le contexte pour obtenir les tâches
-
-    // Recherchez la tâche correspondant à l'ID spécifié dans les paramètres locaux
-    const task = myTasks.find(userTasks => userTasks.tasks.some(taskItem => taskItem.id === Number(id)))?.tasks.find(taskItem => taskItem.id === Number(id));
-
-    // Définissez l'état local pour le nouveau stage de la tâche
+    const { myTasks, setMyTasks } = useMyTasks();
     const [newStageId, setNewStageId] = useState<number | null>(null);
 
-    // Fonction pour changer localement le stage de la tâche
+    const task = myTasks.find(userTasks =>
+        userTasks.tasks.some(taskItem => taskItem.id === Number(id))
+    )?.tasks.find(taskItem => taskItem.id === Number(id));
+
     const updateTaskStageLocally = async () => {
         if (task && newStageId !== null) {
             const updatedTasks = myTasks.map(userTasks => ({
                 ...userTasks,
-                tasks: userTasks.tasks.map(taskItem => {
-                    if (taskItem.id === task.id) {
-                        return { ...taskItem, stage_id: newStageId };
-                    }
-                    return taskItem;
-                })
+                tasks: userTasks.tasks.map(taskItem =>
+                    taskItem.id === task.id ? { ...taskItem, stage_id: newStageId } : taskItem
+                )
             }));
             setMyTasks(updatedTasks);
 
-            // Vérifier la connexion Internet avant d'envoyer l'appel API
-            const isConnected = await NetInfo.fetch().then(state => state.isConnected);
+            const { isConnected } = await NetInfo.fetch();
             if (isConnected) {
-                console.log('ouais ouais');
-                // Envoyer l'appel API pour mettre à jour le stage de la tâche sur le serveur
                 try {
-                    console.log(username);
-
                     const userResponse = await fetch(`https://1028-2001-818-dbbb-a100-64f3-8cfa-bcbb-4b7c.ngrok-free.app/api/users/?search=${username}`, {
                         method: 'GET',
                         headers: {
                             'Authorization': `Token ${token}`,
                         },
                     });
-                    console.log('ouais');
 
-                    if (!userResponse.ok) {
-                        throw new Error('Erreur lors de la récupération de l\'ID de l\'utilisateur');
-                    }
+                    if (!userResponse.ok) throw new Error('Erreur lors de la récupération de l\'ID de l\'utilisateur');
 
                     const userData = await userResponse.json();
-                    if (userData.length === 0) {
-                        throw new Error('Utilisateur non trouvé');
-                    }
+                    if (userData.length === 0) throw new Error('Utilisateur non trouvé');
 
                     const userId = userData[0].id;
-
-                    console.log('stage' + newStageId);
-                    console.log('taskid' + task.id);
-                    console.log('taskid' + userId);
 
                     const response = await fetch(`https://1028-2001-818-dbbb-a100-64f3-8cfa-bcbb-4b7c.ngrok-free.app/api/update_task/`, {
                         method: 'POST',
@@ -81,7 +55,6 @@ const ProductDetailsScreen = () => {
                         }),
                     });
 
-                    // Vérifiez si la réponse de l'API est OK
                     if (response.ok) {
                         Alert.alert('Mise à jour effectuée', 'Le stage de la tâche a été mis à jour avec succès.');
                     } else {
@@ -100,16 +73,29 @@ const ProductDetailsScreen = () => {
     return (
         <View style={styles.container}>
             {task ? (
-                <View>
+                <View style={styles.card}>
                     <Text style={styles.name}>{task.name}</Text>
                     <Text style={styles.instructions}>
                         {task.instruction_text ? (task.instruction_text === "False" ? "Aucune instruction disponible" : task.instruction_text) : 'Instructions non disponibles'}
                     </Text>
-                    <Text>{task.stage_id}</Text>
-                    <Button title="Stage 1" onPress={() => setNewStageId(1)} />
-                    <Button title="Stage 2" onPress={() => setNewStageId(2)} />
-                    {/* Ajoutez d'autres boutons pour d'autres stages si nécessaire */}
-                    <Button title="Sauvegarder" onPress={updateTaskStageLocally} />
+                    <Text style={styles.stage}>Stage: {task.stage_id}</Text>
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity
+                            style={[styles.button, newStageId === 1 && styles.buttonSelected]}
+                            onPress={() => setNewStageId(1)}
+                        >
+                            <Text style={styles.buttonText}>Stage 1</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={[styles.button, newStageId === 2 && styles.buttonSelected]}
+                            onPress={() => setNewStageId(2)}
+                        >
+                            <Text style={styles.buttonText}>Stage 2</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <TouchableOpacity style={styles.saveButton} onPress={updateTaskStageLocally}>
+                        <Text style={styles.saveButtonText}>Sauvegarder</Text>
+                    </TouchableOpacity>
                 </View>
             ) : (
                 <Text style={styles.error}>Tâche non trouvée</Text>
@@ -118,27 +104,75 @@ const ProductDetailsScreen = () => {
     );
 };
 
-
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: 'white',
         flex: 1,
-        padding: 10
+        padding: 20,
+        backgroundColor: '#f5f5f5',
+    },
+    card: {
+        backgroundColor: 'white',
+        borderRadius: 10,
+        padding: 20,
+        shadowColor: '#000',
+        shadowOpacity: 0.1,
+        shadowOffset: { width: 0, height: 2 },
+        shadowRadius: 10,
+        elevation: 5,
     },
     name: {
-        fontSize: 20,
+        fontSize: 22,
         fontWeight: 'bold',
-        marginBottom: 5,
-        color: 'black',
+        marginBottom: 10,
+        color: '#333',
     },
     instructions: {
         fontSize: 16,
-        color: '#666666',
+        color: '#666',
+        marginBottom: 10,
+    },
+    stage: {
+        fontSize: 18,
+        color: '#444',
+        marginBottom: 20,
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    button: {
+        backgroundColor: '#007bff',
+        borderRadius: 5,
+        padding: 10,
+        marginVertical: 5,
+        flex: 1,
+        marginHorizontal: 5,
+    },
+    buttonSelected: {
+        backgroundColor: '#0056b3',
+    },
+    buttonText: {
+        color: 'white',
+        textAlign: 'center',
+        fontSize: 16,
+    },
+    saveButton: {
+        backgroundColor: '#28a745',
+        borderRadius: 5,
+        padding: 15,
+        marginTop: 20,
+    },
+    saveButtonText: {
+        color: 'white',
+        textAlign: 'center',
+        fontSize: 18,
+        fontWeight: 'bold',
     },
     error: {
-        fontSize: 16,
+        fontSize: 18,
         color: 'red',
         textAlign: 'center',
+        marginTop: 20,
     },
 });
 
