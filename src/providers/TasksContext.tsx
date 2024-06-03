@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect, useContext, ReactNode } from 'react';
+import React, { createContext, useState, useContext, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface Task {
@@ -7,6 +7,7 @@ interface Task {
     name: string;
     instruction_text: string;
     user_id: Int16Array | null;
+    stage_id: string;
 }
 
 interface TasksContextType {
@@ -24,16 +25,6 @@ const TasksContext = createContext<TasksContextType | undefined>(undefined);
 export const TasksProvider: React.FC<TasksProviderProps> = ({ children }) => {
     const [tasks, setTasks] = useState<Task[]>([]);
 
-    useEffect(() => {
-        const loadTasks = async () => {
-            const storedTasks = await getStoredTasks();
-            if (storedTasks) {
-                setTasks(storedTasks);
-            }
-        };
-        loadTasks();
-    }, []);
-
     const storeTasks = async (tasks: Task[]) => {
         try {
             const jsonValue = JSON.stringify(tasks);
@@ -41,16 +32,6 @@ export const TasksProvider: React.FC<TasksProviderProps> = ({ children }) => {
             setTasks(tasks);
         } catch (e) {
             console.error('Erreur lors du stockage des tâches :', e);
-        }
-    };
-
-    const getStoredTasks = async () => {
-        try {
-            const jsonValue = await AsyncStorage.getItem('@tasks');
-            return jsonValue != null ? JSON.parse(jsonValue) : null;
-        } catch (e) {
-            console.error('Erreur lors de la récupération des tâches :', e);
-            return null;
         }
     };
 

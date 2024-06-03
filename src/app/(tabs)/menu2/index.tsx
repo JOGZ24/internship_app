@@ -63,6 +63,7 @@ export default function TabTwoScreen() {
                     data={searchResults.flatMap(result => result.tasks)}
                     renderItem={({ item }) => (
                         <Pressable style={styles.itemContainer} onPress={() => handlePress(item.id)}>
+                            <Text>{item.id}</Text>
                             <Text style={{ color: 'black', fontSize: 22 }}>{item.name || 'Nom non disponible'}</Text>
                             <Text style={styles.instructions}>
                                 {item.instruction_text ? (item.instruction_text === "False" ? "Aucune instruction disponible" : item.instruction_text) : 'Instructions non disponibles'}

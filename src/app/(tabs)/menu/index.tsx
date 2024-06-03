@@ -10,6 +10,7 @@ interface Task {
   name: string;
   instruction_text: string;
   user_id: Int16Array | null;
+  stage_id: string;
 }
 
 export default function TabOneScreen() {
@@ -28,10 +29,10 @@ export default function TabOneScreen() {
   }, [token]);
 
   useEffect(() => {
-    if (teamId && token) {
+    if (teamId && token && tasks.length === 0) {
       fetchAndStoreTasks(token, teamId).then(() => setLoading(false));
     }
-  }, [teamId, token, fetchAndStoreTasks]);
+  }, [teamId, token, tasks, fetchAndStoreTasks]);
 
   useEffect(() => {
     setIsEmpty(tasks.length === 0);
@@ -123,6 +124,7 @@ export default function TabOneScreen() {
         <Text style={styles.instructions}>
           {item.instruction_text ? (item.instruction_text === "False" ? "No instructions available" : item.instruction_text) : 'Instructions non disponibles'}
         </Text>
+        <Text>{item.stage_id}</Text>
         <Button title="Take the work order" onPress={() => handleTakeTask(item.id)} />
       </Pressable>
     </Link>

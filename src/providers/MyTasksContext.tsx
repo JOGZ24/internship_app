@@ -9,6 +9,7 @@ interface MyTask {
         id: number;
         name: string;
         instruction_text: string;
+        stage_id: number;
     }[];
 }
 
