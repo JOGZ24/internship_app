@@ -33,7 +33,7 @@ export default function TabLayout() {
         options={{
           title: 'Work orders',
           headerShown: false,
-          tabBarIcon: ({ color }) => <TabBarIcon name="cutlery" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="list" color={color} />,
           headerRight: () => (
             <Link href="/modal" asChild>
               <Pressable>
@@ -55,7 +55,7 @@ export default function TabLayout() {
         options={{
           title: 'My Work Orders',
           headerShown: false,
-          tabBarIcon: ({ color }) => <TabBarIcon name="list" color={color} />,
+          tabBarIcon: ({ color }) => <TabBarIcon name="clipboard" color={color} />,
         }}
       />
       <Tabs.Screen name='two' options={{ href: null }}></Tabs.Screen>

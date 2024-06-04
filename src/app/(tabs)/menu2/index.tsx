@@ -24,33 +24,29 @@ export default function TabTwoScreen() {
     const { token, username } = useAuth();
     const router = useRouter();
 
-    useFocusEffect(
-        React.useCallback(() => {
-            const fetchSearchResults = async () => {
-                try {
-                    const response = await fetch(`https://1028-2001-818-dbbb-a100-64f3-8cfa-bcbb-4b7c.ngrok-free.app/api/mytasks/search-by-username/?username=${username}`, {
-                        method: 'GET',
-                        headers: {
-                            'Authorization': `Token ${token}`,
-                        },
-                    });
-                    if (!response.ok) {
-                        throw new Error('Erreur lors de la récupération des données');
-                    }
-                    const data: MyTask[] = await response.json();
-                    setSearchResults(data);
-                    setLoading(false);
-                } catch (error) {
-                    console.error(error);
-                    setLoading(false);
+    useEffect(() => {
+        const fetchSearchResults = async () => {
+            try {
+                const response = await fetch(`https://1028-2001-818-dbbb-a100-64f3-8cfa-bcbb-4b7c.ngrok-free.app/api/mytasks/search-by-username/?username=${username}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Token ${token}`,
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error('Erreur lors de la récupération des données');
                 }
-            };
+                const data: MyTask[] = await response.json();
+                setSearchResults(data);
+                setLoading(false);
+            } catch (error) {
+                console.error(error);
+                setLoading(false);
+            }
+        };
 
-            fetchSearchResults();
-
-            return () => { };
-        }, [token, username])
-    );
+        fetchSearchResults();
+    }, [token, username]);
 
     const handlePress = (id: number) => {
         router.push(`/menu2/${id}`);
@@ -69,8 +65,6 @@ export default function TabTwoScreen() {
                             <Text style={styles.description}>
                                 {item.description ? (item.description === "<p><br></p>" ? "No description available" : item.description) : 'No description available'}
                             </Text>
-
-
                         </Pressable>
                     )}
                     keyExtractor={(item, index) => index.toString()}
