@@ -12,6 +12,7 @@ interface Task {
   user_id: Int16Array | null;
   stage_id: number;
   description: string;
+  stage_name?: string;
 }
 
 export default function TabOneScreen() {
@@ -131,7 +132,7 @@ export default function TabOneScreen() {
         <Text style={styles.description}>
           {item.description ? (item.description === "<p><br></p>" ? "No description available" : item.description) : 'No description available'}
         </Text>
-        <Text>Stage: {item.stage_id}</Text>
+        <Text>Stage: {item.stage_name}</Text>
         <Pressable
           style={[
             styles.takeTaskButton,
