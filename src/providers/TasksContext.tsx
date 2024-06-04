@@ -8,6 +8,7 @@ interface Task {
     instruction_text: string;
     user_id: Int16Array | null;
     stage_id: number;
+    description: string;
 }
 
 interface TasksContextType {

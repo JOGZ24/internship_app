@@ -4,6 +4,7 @@ import { Text, View } from '../../../components/Themed';
 import { useAuth } from '@/src/providers/AuthProvider';
 import { useFocusEffect } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
+import RenderHTML from 'react-native-render-html';
 
 interface MyTask {
     user: {
@@ -13,6 +14,7 @@ interface MyTask {
         id: number;
         name: string;
         instruction_text: string;
+        description: string;
     }
 }
 
@@ -63,11 +65,12 @@ export default function TabTwoScreen() {
                     data={searchResults.flatMap(result => result.tasks)}
                     renderItem={({ item }) => (
                         <Pressable style={styles.itemContainer} onPress={() => handlePress(item.id)}>
-                            <Text>{item.id}</Text>
                             <Text style={{ color: 'black', fontSize: 22 }}>{item.name || 'Nom non disponible'}</Text>
-                            <Text style={styles.instructions}>
-                                {item.instruction_text ? (item.instruction_text === "False" ? "Aucune instruction disponible" : item.instruction_text) : 'Instructions non disponibles'}
+                            <Text style={styles.description}>
+                                {item.description ? (item.description === "<p><br></p>" ? "No description available" : item.description) : 'No description available'}
                             </Text>
+
+
                         </Pressable>
                     )}
                     keyExtractor={(item, index) => index.toString()}
@@ -104,7 +107,7 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         color: 'black',
     },
-    instructions: {
+    description: {
         fontSize: 16,
         color: '#666666',
     },

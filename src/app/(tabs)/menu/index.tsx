@@ -11,6 +11,7 @@ interface Task {
   instruction_text: string;
   user_id: Int16Array | null;
   stage_id: number;
+  description: string;
 }
 
 export default function TabOneScreen() {
@@ -127,8 +128,8 @@ export default function TabOneScreen() {
     <Link href={`/menu/${item.id}`} asChild>
       <Pressable style={styles.itemContainer}>
         <Text style={styles.name}>{item.name || 'Nom non disponible'}</Text>
-        <Text style={styles.instructions}>
-          {item.instruction_text ? (item.instruction_text === "False" ? "No instructions available" : item.instruction_text) : 'Instructions non disponibles'}
+        <Text style={styles.description}>
+          {item.description ? (item.description === "<p><br></p>" ? "No description available" : item.description) : 'No description available'}
         </Text>
         <Text>Stage: {item.stage_id}</Text>
         <Pressable
@@ -185,7 +186,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
   },
-  instructions: {
+  description: {
     fontSize: 14,
     color: '#666',
     marginTop: 5,
@@ -194,9 +195,12 @@ const styles = StyleSheet.create({
     marginTop: 10,
     paddingVertical: 10,
     paddingHorizontal: 15,
-    backgroundColor: '#007bff',
+    backgroundColor: '#5C59F4',
     borderRadius: 5,
+    shadowOpacity: 0.2
   },
+
+
   takeTaskButtonSelected: {
     backgroundColor: '#0056b3',
   },

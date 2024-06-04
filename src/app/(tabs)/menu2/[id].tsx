@@ -56,7 +56,7 @@ const ProductDetailsScreen = () => {
                     });
 
                     if (response.ok) {
-                        Alert.alert('Mise à jour effectuée', 'Le stage de la tâche a été mis à jour avec succès.');
+                        Alert.alert('Update completed', 'The task stage has been updated successfully.');
                     } else {
                         Alert.alert('Erreur', 'Une erreur s\'est produite lors de la mise à jour du stage de la tâche.');
                     }
@@ -65,7 +65,7 @@ const ProductDetailsScreen = () => {
                     Alert.alert('Erreur', 'Une erreur s\'est produite lors de la mise à jour du stage de la tâche.');
                 }
             } else {
-                Alert.alert('Pas de connexion Internet', 'La mise à jour sera effectuée dès que vous serez connecté.');
+                Alert.alert('No internet connection', 'The update will be done as soon as you log in to internet .');
             }
         }
     };
@@ -141,31 +141,38 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     button: {
-        backgroundColor: '#007bff',
+        backgroundColor: 'white',
+        borderColor: '#5C59F4',
         borderRadius: 5,
         padding: 10,
         marginVertical: 5,
         flex: 1,
         marginHorizontal: 5,
+        borderWidth: 1,
+        shadowColor: '#5C59F4',
+        shadowOpacity: 0.3
     },
     buttonSelected: {
-        backgroundColor: '#0056b3',
+        opacity: 0.6,
     },
     buttonText: {
-        color: 'white',
+        color: '#5C59F4',
         textAlign: 'center',
         fontSize: 16,
     },
     saveButton: {
-        backgroundColor: '#28a745',
+        backgroundColor: '#5C59F4',
         borderRadius: 5,
         padding: 15,
         marginTop: 20,
+        shadowColor: '#5C59F4',
+        shadowOpacity: 0.3,
+
     },
     saveButtonText: {
         color: 'white',
         textAlign: 'center',
-        fontSize: 18,
+        fontSize: 16,
         fontWeight: 'bold',
     },
     error: {

@@ -31,7 +31,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="menu"
         options={{
-          title: 'Menu',
+          title: 'Work orders',
           headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="cutlery" color={color} />,
           headerRight: () => (
@@ -53,7 +53,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="menu2"
         options={{
-          title: 'Orders',
+          title: 'My Work Orders',
           headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name="list" color={color} />,
         }}
