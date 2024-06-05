@@ -11,7 +11,7 @@ const LoginForm = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch('https://1028-2001-818-dbbb-a100-64f3-8cfa-bcbb-4b7c.ngrok-free.app/api-token-auth/', {
+      const response = await fetch('https://18ca-2001-818-dbbb-a100-99c3-6c94-ff89-470d.ngrok-free.app/api-token-auth/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -29,10 +29,6 @@ const LoginForm = () => {
       const data = await response.json();
       setToken(data.token);
       setUser(username);
-      console.log(username);
-
-      console.log(username);
-      console.log(password);
       setUsername('');
       setPassword('');
 

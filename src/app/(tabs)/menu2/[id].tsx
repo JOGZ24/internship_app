@@ -28,7 +28,7 @@ const ProductDetailsScreen = () => {
             const { isConnected } = await NetInfo.fetch();
             if (isConnected) {
                 try {
-                    const userResponse = await fetch(`https://1028-2001-818-dbbb-a100-64f3-8cfa-bcbb-4b7c.ngrok-free.app/api/users/?search=${username}`, {
+                    const userResponse = await fetch(`https://18ca-2001-818-dbbb-a100-99c3-6c94-ff89-470d.ngrok-free.app/api/users/?search=${username}`, {
                         method: 'GET',
                         headers: {
                             'Authorization': `Token ${token}`,
@@ -42,7 +42,7 @@ const ProductDetailsScreen = () => {
 
                     const userId = userData[0].id;
 
-                    const response = await fetch(`https://1028-2001-818-dbbb-a100-64f3-8cfa-bcbb-4b7c.ngrok-free.app/api/update_task/`, {
+                    const response = await fetch(`https://18ca-2001-818-dbbb-a100-99c3-6c94-ff89-470d.ngrok-free.app/api/update_task/`, {
                         method: 'POST',
                         headers: {
                             'Authorization': `Token ${token}`,

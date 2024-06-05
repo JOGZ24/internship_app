@@ -43,7 +43,7 @@ export default function TabOneScreen() {
 
   const fetchTeamId = async (token: string) => {
     try {
-      const response = await fetch(`https://1028-2001-818-dbbb-a100-64f3-8cfa-bcbb-4b7c.ngrok-free.app/api/teams/?search=${username}`, {
+      const response = await fetch(`https://18ca-2001-818-dbbb-a100-99c3-6c94-ff89-470d.ngrok-free.app/api/teams/?search=${username}`, {
         method: 'GET',
         headers: {
           'Authorization': `Token ${token}`,
@@ -68,7 +68,7 @@ export default function TabOneScreen() {
     setSelectedTaskId(taskId);
 
     try {
-      const userResponse = await fetch(`https://1028-2001-818-dbbb-a100-64f3-8cfa-bcbb-4b7c.ngrok-free.app/api/users/?search=${username}`, {
+      const userResponse = await fetch(`https://18ca-2001-818-dbbb-a100-99c3-6c94-ff89-470d.ngrok-free.app/api/users/?search=${username}`, {
         method: 'GET',
         headers: {
           'Authorization': `Token ${token}`,
@@ -86,7 +86,7 @@ export default function TabOneScreen() {
 
       const userId = userData[0].id;
 
-      const response = await fetch(`https://1028-2001-818-dbbb-a100-64f3-8cfa-bcbb-4b7c.ngrok-free.app/api/take_task/`, {
+      const response = await fetch(`https://18ca-2001-818-dbbb-a100-99c3-6c94-ff89-470d.ngrok-free.app/api/take_task/`, {
         method: 'POST',
         headers: {
           'Authorization': `Token ${token}`,

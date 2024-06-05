@@ -38,7 +38,7 @@ export const TasksProvider: React.FC<TasksProviderProps> = ({ children }) => {
     // Fonction pour récupérer toutes les étapes
     const fetchStages = async () => {
         try {
-            const response = await fetch(`https://1028-2001-818-dbbb-a100-64f3-8cfa-bcbb-4b7c.ngrok-free.app/api/stages/`, {
+            const response = await fetch(`https://18ca-2001-818-dbbb-a100-99c3-6c94-ff89-470d.ngrok-free.app/api/stages/`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Token ${token}`,
@@ -63,7 +63,7 @@ export const TasksProvider: React.FC<TasksProviderProps> = ({ children }) => {
 
     const fetchAndStoreTasks = async (token: string, teamId: number) => {
         try {
-            const response = await fetch(`https://1028-2001-818-dbbb-a100-64f3-8cfa-bcbb-4b7c.ngrok-free.app/api/tasks/?search=${teamId}`, {
+            const response = await fetch(`https://18ca-2001-818-dbbb-a100-99c3-6c94-ff89-470d.ngrok-free.app/api/tasks/?search=${teamId}`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `Token ${token}`,
@@ -76,8 +76,7 @@ export const TasksProvider: React.FC<TasksProviderProps> = ({ children }) => {
             // Attendre que les étapes soient récupérées avant de procéder
             await fetchStages();
 
-            console.log(stages);
-            console.log(filteredData);
+
 
             const updatedTasks = filteredData.map(task => {
                 // Vérifier si task.stage_id est une chaîne de caractères
