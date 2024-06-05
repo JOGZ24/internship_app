@@ -1,15 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { useMyTasks } from '../../../providers/MyTasksContext';
 import { useLocalSearchParams } from 'expo-router';
 import NetInfo from '@react-native-community/netinfo';
 import { useAuth } from '@/src/providers/AuthProvider';
+import { useStageContext } from '../../../providers/StageContext'; // Import du contexte des étapes
 
 const ProductDetailsScreen = () => {
     const { id } = useLocalSearchParams();
     const { token, username } = useAuth();
     const { myTasks, setMyTasks } = useMyTasks();
     const [newStageId, setNewStageId] = useState<number | null>(null);
+    const { stages } = useStageContext(); // Utilisation du contexte des étapes
+
+    useEffect(() => {
+        if (stages.length > 0) {
+            // Si des étapes sont disponibles, définissez l'étape par défaut sur la première étape
+            setNewStageId(stages[0].id);
+        }
+    }, [stages]);
 
     const task = myTasks.find(userTasks =>
         userTasks.tasks.some(taskItem => taskItem.id === Number(id))
@@ -80,18 +89,15 @@ const ProductDetailsScreen = () => {
                     </Text>
                     <Text style={styles.stage}>Stage: {task.stage_id}</Text>
                     <View style={styles.buttonContainer}>
-                        <TouchableOpacity
-                            style={[styles.button, newStageId === 1 && styles.buttonSelected]}
-                            onPress={() => setNewStageId(1)}
-                        >
-                            <Text style={styles.buttonText}>Stage 1</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={[styles.button, newStageId === 2 && styles.buttonSelected]}
-                            onPress={() => setNewStageId(2)}
-                        >
-                            <Text style={styles.buttonText}>Stage 2</Text>
-                        </TouchableOpacity>
+                        {stages.map(stage => (
+                            <TouchableOpacity
+                                key={stage.id}
+                                style={[styles.button, newStageId === stage.id && styles.buttonSelected]}
+                                onPress={() => setNewStageId(stage.id)}
+                            >
+                                <Text style={styles.buttonText}>{stage.name}</Text>
+                            </TouchableOpacity>
+                        ))}
                     </View>
                     <TouchableOpacity style={styles.saveButton} onPress={updateTaskStageLocally}>
                         <Text style={styles.saveButtonText}>Sauvegarder</Text>
@@ -103,7 +109,6 @@ const ProductDetailsScreen = () => {
         </View>
     );
 };
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
