@@ -3,6 +3,7 @@ import { StyleSheet, FlatList, ActivityIndicator, Pressable } from 'react-native
 import { Text, View } from '../../../components/Themed';
 import { useAuth } from '@/src/providers/AuthProvider';
 import { useRouter } from 'expo-router';
+import { StageProvider, useStageContext } from '../../../providers/StageContext'; // Assurez-vous d'importer correctement le fournisseur de contexte et le hook
 
 interface MyTask {
     user: {
@@ -18,17 +19,12 @@ interface MyTask {
     }[];
 }
 
-interface Stage {
-    id: number;
-    name: string;
-}
-
 export default function TabTwoScreen() {
     const [searchResults, setSearchResults] = useState<MyTask[]>([]);
     const [loading, setLoading] = useState(true);
-    const [stages, setStages] = useState<Stage[]>([]); // Nouvel état pour stocker les étapes
     const { token, username } = useAuth();
     const router = useRouter();
+    const { stages } = useStageContext(); // Utilisez le hook useStageContext pour obtenir les étapes
 
     useEffect(() => {
         const fetchSearchResults = async () => {
@@ -51,30 +47,13 @@ export default function TabTwoScreen() {
             }
         };
 
-        const fetchStages = async () => { // Fonction pour récupérer les étapes depuis l'API
-            try {
-                const response = await fetch(`https://18ca-2001-818-dbbb-a100-99c3-6c94-ff89-470d.ngrok-free.app/api/stages/`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Token ${token}`,
-                    },
-                });
-                const data: Stage[] = await response.json();
-                setStages(data);
-            } catch (error) {
-                console.error('Erreur lors de la récupération des étapes: ', error);
-            }
-        };
-
         fetchSearchResults();
-        fetchStages(); // Appel de la fonction pour récupérer les étapes
     }, [token, username]);
 
     const handlePress = (id: number) => {
         router.push(`/menu2/${id}`);
     };
-
-    // Fonction pour obtenir le nom du stage à partir de son ID
+    console.log(stages);
     // Fonction pour obtenir le nom du stage à partir de son ID
     const getStageName = (stageId: string | number) => {
         const stage = stages.find(stage => {
@@ -142,3 +121,6 @@ const styles = StyleSheet.create({
         color: '#666666',
     },
 });
+
+// Envelopper le composant TabTwoScreen avec le fournisseur de contexte des étapes
+

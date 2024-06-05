@@ -10,6 +10,7 @@ import { useColorScheme } from '../components/useColorScheme';
 import { AuthProvider } from '../providers/AuthProvider';
 import { TasksProvider } from '../providers/TasksContext';
 import { MyTasksProvider } from '../providers/MyTasksContext';
+import { StageProvider } from '../providers/StageContext';
 
 
 export {
@@ -56,11 +57,13 @@ function RootLayoutNav() {
     <AuthProvider>
       <TasksProvider>
         <MyTasksProvider>
-          <Stack>
-            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
-          </Stack>
+          <StageProvider>
+            <Stack>
+              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+            </Stack>
+          </StageProvider>
         </MyTasksProvider>
       </TasksProvider>
     </AuthProvider>
