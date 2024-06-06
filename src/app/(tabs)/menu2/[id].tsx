@@ -85,7 +85,7 @@ const ProductDetailsScreen = () => {
                 <View style={styles.card}>
                     <Text style={styles.name}>{task.name}</Text>
                     <Text style={styles.instructions}>
-                        {task.instruction_text ? (task.instruction_text === "False" ? "Aucune instruction disponible" : task.instruction_text) : 'Instructions non disponibles'}
+                        {task.description ? (task.description === "<p><br></p>" ? "No description available" : task.description) : 'No description available'}
                     </Text>
                     <Text style={styles.stage}>Stage: {task.stage_id}</Text>
                     <View style={styles.buttonContainer}>
@@ -100,7 +100,7 @@ const ProductDetailsScreen = () => {
                         ))}
                     </View>
                     <TouchableOpacity style={styles.saveButton} onPress={updateTaskStageLocally}>
-                        <Text style={styles.saveButtonText}>Sauvegarder</Text>
+                        <Text style={styles.saveButtonText}>Save</Text>
                     </TouchableOpacity>
                 </View>
             ) : (

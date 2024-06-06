@@ -81,10 +81,7 @@ export default function TabTwoScreen() {
                     renderItem={({ item }) => (
                         <Pressable style={styles.itemContainer} onPress={() => handlePress(item.id)}>
                             <Text style={styles.name}>{item.name || 'Nom non disponible'}</Text>
-                            <Text style={styles.stageName}>{getStageName(item.stage_id) || 'Stage non disponible'}</Text>
-                            <Text style={styles.description}>
-                                {item.description ? (item.description === "<p><br></p>" ? "No description available" : item.description) : 'No description available'}
-                            </Text>
+                            <Text style={styles.stageName}>Stage : {getStageName(item.stage_id) || 'Stage non disponible'}</Text>
                         </Pressable>
                     )}
                     keyExtractor={(item, index) => index.toString()}

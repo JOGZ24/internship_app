@@ -129,9 +129,6 @@ export default function TabOneScreen() {
     <Link href={`/menu/${item.id}`} asChild>
       <Pressable style={styles.itemContainer}>
         <Text style={styles.name}>{item.name || 'Nom non disponible'}</Text>
-        <Text style={styles.description}>
-          {item.description ? (item.description === "<p><br></p>" ? "No description available" : item.description) : 'No description available'}
-        </Text>
         <Text>Stage: {item.stage_name}</Text>
         <Pressable
           style={[
