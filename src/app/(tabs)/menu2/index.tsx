@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { StyleSheet, FlatList, ActivityIndicator, Pressable } from 'react-native';
 import { Text, View } from '../../../components/Themed';
 import { useAuth } from '@/src/providers/AuthProvider';
@@ -22,39 +22,39 @@ interface MyTask {
 export default function TabTwoScreen() {
     const [searchResults, setSearchResults] = useState<MyTask[]>([]);
     const [loading, setLoading] = useState(true);
+    const [refreshing, setRefreshing] = useState(false); // État pour gérer le rafraîchissement
     const { token, username } = useAuth();
     const router = useRouter();
     const { stages } = useStageContext(); // Utilisez le hook useStageContext pour obtenir les étapes
 
-    useEffect(() => {
-        const fetchSearchResults = async () => {
-            try {
-                const response = await fetch(`https://18ca-2001-818-dbbb-a100-99c3-6c94-ff89-470d.ngrok-free.app/api/mytasks/search-by-username/?username=${username}`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Token ${token}`,
-                    },
-                });
-                if (!response.ok) {
-                    throw new Error('Erreur lors de la récupération des données');
-                }
-                const data: MyTask[] = await response.json();
-                setSearchResults(data);
-                setLoading(false);
-            } catch (error) {
-                console.error(error);
-                setLoading(false);
+    const fetchSearchResults = async () => {
+        try {
+            const response = await fetch(`https://18ca-2001-818-dbbb-a100-99c3-6c94-ff89-470d.ngrok-free.app/api/mytasks/search-by-username/?username=${username}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Token ${token}`,
+                },
+            });
+            if (!response.ok) {
+                throw new Error('Erreur lors de la récupération des données');
             }
-        };
+            const data: MyTask[] = await response.json();
+            setSearchResults(data);
+            setLoading(false);
+        } catch (error) {
+            console.error(error);
+            setLoading(false);
+        }
+    };
 
+    useEffect(() => {
         fetchSearchResults();
     }, [token, username]);
 
     const handlePress = (id: number) => {
         router.push(`/menu2/${id}`);
     };
-    console.log(stages);
-    // Fonction pour obtenir le nom du stage à partir de son ID
+
     const getStageName = (stageId: string | number) => {
         const stage = stages.find(stage => {
             if (typeof stageId === 'string') {
@@ -65,6 +65,11 @@ export default function TabTwoScreen() {
         });
         return stage ? stage.name : 'Stage non trouvé';
     };
+
+    const onRefresh = useCallback(() => {
+        setRefreshing(true);
+        fetchSearchResults().then(() => setRefreshing(false));
+    }, [token, username]);
 
     return (
         <View style={styles.container}>
@@ -84,6 +89,8 @@ export default function TabTwoScreen() {
                     )}
                     keyExtractor={(item, index) => index.toString()}
                     contentContainerStyle={{ paddingVertical: 10 }}
+                    refreshing={refreshing} // Ajoutez cette ligne
+                    onRefresh={onRefresh} // Ajoutez cette ligne
                 />
             )}
         </View>
@@ -121,6 +128,3 @@ const styles = StyleSheet.create({
         color: '#666666',
     },
 });
-
-// Envelopper le composant TabTwoScreen avec le fournisseur de contexte des étapes
-
